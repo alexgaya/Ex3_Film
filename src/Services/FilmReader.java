@@ -5,6 +5,7 @@
  */
 package Services;
 
+import Helpers.ConstantsHelper;
 import Models.Film;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,7 +20,8 @@ public class FilmReader {
     private final ObjectInputStream ois;
 
     public FilmReader() throws FileNotFoundException, IOException {
-        ois = new ObjectInputStream(new FileInputStream("data/Films.dat"));
+        ois = new ObjectInputStream(new FileInputStream(
+                ConstantsHelper.DATA_FOLDER+"/"+ConstantsHelper.SOURCE_FILE));
     }
     
     public Film getFilm() throws IOException, ClassNotFoundException {
