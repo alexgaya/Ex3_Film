@@ -19,7 +19,7 @@ public class FilmReader {
     private final ObjectInputStream ois;
 
     public FilmReader() throws FileNotFoundException, IOException {
-        ois = new ObjectInputStream(new FileInputStream("Films.dat"));
+        ois = new ObjectInputStream(new FileInputStream("data/Films.dat"));
     }
     
     public Film getFilm() throws IOException, ClassNotFoundException {

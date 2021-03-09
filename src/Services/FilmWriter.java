@@ -19,7 +19,7 @@ public class FilmWriter {
     private final ObjectOutputStream oos;
 
     public FilmWriter() throws FileNotFoundException, IOException {
-        oos = new ObjectOutputStream(new FileOutputStream("Films.dat"));
+        oos = new ObjectOutputStream(new FileOutputStream("data/Films.dat"));
     }
     
     public void post(Film film) throws IOException{
