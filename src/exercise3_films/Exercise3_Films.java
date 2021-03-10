@@ -9,6 +9,8 @@ import Helpers.ConstantsHelper;
 import Models.Film;
 import Models.GenreType;
 import Services.FilmReader;
+import Services.FilmWriter;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
@@ -21,17 +23,31 @@ public class Exercise3_Films {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        readFilms();
+        try {
+            filterFilms(readFilms());
+        } catch (IOException | ClassNotFoundException ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
     }
     
-    public static void readFilms() {
-        try {
+    public static void filterFilms(Film[] films) throws IOException {
+        if (films.length == 0) return;
+        for(GenreType g : GenreType.values()) {
+                writeFilms(Arrays.stream(films)
+                            .filter(e -> e != null 
+                                    && !e.isSentinel() 
+                                    && e.getGenre().equals(g))
+                            .toArray(Film[]::new), g);
+            }
+    } 
+    
+    public static Film[] readFilms() throws IOException, ClassNotFoundException {
             Film[] films = new Film[ConstantsHelper.MAX_FILMS];
             int count = 0;
             FilmReader fr = new FilmReader();
             Film f = fr.getFilm();
             films[count] = f;
+            System.out.println("Stored films:\n");
             while(!f.isSentinel()) {
                 System.out.println(f);
                 count++;
@@ -39,26 +55,17 @@ public class Exercise3_Films {
                 films[count] = f;
             }
             fr.close();
-            
-            for(GenreType g : GenreType.values()) {
-                writeFilms(Arrays.stream(films)
-                            .filter(e -> e != null 
-                                    && !e.isSentinel() 
-                                    && e.getGenre().equals(g))
-                            .toArray(Film[]::new), g);
-            }
-            
-            
-            
-        } catch (Exception ex) {
-            System.out.println("Error: " + ex.getMessage());
-            System.out.println("The program must terminate.");
-            System.exit(0);
-        } 
+            return films;
     }
     
-    public static void writeFilms(Film[] films, GenreType genre) {
-        System.out.println(films.length + genre.toString());
+    public static void writeFilms(Film[] films, GenreType genre) throws IOException {  
+        if (films.length == 0) return;
+        FilmWriter fr = new FilmWriter(genre.toString());
+        for(Film f : films) {
+            fr.post(f);
+        }
+        fr.post(Film.sentinel);
+        fr.close();
     }
     
 }
